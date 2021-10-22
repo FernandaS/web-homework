@@ -31,7 +31,8 @@ module.exports = function main (options, cb) {
 
   mongoose.Promise = global.Promise
   mongoose.connect(MONGO_URI, {
-    useNewUrlParser: true
+    useNewUrlParser: true,
+    useUnifiedTopology: true
   })
 
   // Setup error handling
