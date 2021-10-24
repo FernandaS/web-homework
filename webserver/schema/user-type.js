@@ -1,15 +1,6 @@
 /* eslint-disable no-unused-vars */
-const path = require('path')
-const graphql = require('graphql')
-const {
-  GraphQLList,
-  GraphQLString,
-  GraphQLObjectType
-} = graphql
-
-const UserSchema = require(path.join('..', 'data-models', 'User')) // eslint-disable-line no-unused-vars
-const { TransactionModel: Transaction } = require(path.join('..', 'data-models', 'Transaction'))
-const TransactionType = require('./transaction-type')
+const graphql = require('graphql');
+const { GraphQLString, GraphQLObjectType } = graphql;
 
 const UserType = new GraphQLObjectType({
   name: 'User',
@@ -17,14 +8,8 @@ const UserType = new GraphQLObjectType({
     id: { type: GraphQLString },
     dob: { type: GraphQLString },
     firstName: { type: GraphQLString },
-    lastName: { type: GraphQLString },
-    transactions: {
-      type: new GraphQLList(TransactionType),
-      resolve (parentValue, args) {
-        return Transaction.find({ user_id: args.id }).populate('transaction')
-      }
-    }
+    lastName: { type: GraphQLString }
   })
-})
+});
 
-module.exports = UserType
+module.exports = UserType;

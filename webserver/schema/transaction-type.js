@@ -1,10 +1,9 @@
-const graphql = require('graphql')
-const {
-  GraphQLObjectType,
-  GraphQLString,
-  GraphQLBoolean,
-  GraphQLFloat
-} = graphql
+const path = require('path');
+const graphql = require('graphql');
+const { GraphQLObjectType, GraphQLString, GraphQLBoolean, GraphQLFloat } = graphql;
+const { UserModel: User } = require(path.join('..', 'data-models', 'User'));
+const UserType = require('./user-type');
+console.log('UserType', UserType);
 
 const TransactionType = new GraphQLObjectType({
   name: 'Transaction',
@@ -15,8 +14,14 @@ const TransactionType = new GraphQLObjectType({
     merchant_id: { type: GraphQLString },
     debit: { type: GraphQLBoolean },
     credit: { type: GraphQLBoolean },
-    amount: { type: GraphQLFloat }
+    amount: { type: GraphQLFloat },
+    user: {
+      type: UserType,
+      resolve(parentValue) {
+        return User.findById(parentValue.user_id);
+      }
+    }
   })
-})
+});
 
-module.exports = TransactionType
+module.exports = TransactionType;

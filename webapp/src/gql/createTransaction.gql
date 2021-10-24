@@ -1,0 +1,5 @@
+mutation CreateTransaction($userId: String, $description: String, $debit: Boolean, $credit: Boolean, $amount: Float) {
+  addTransaction(user_id: $userId, description: $description, debit: $debit, credit: $credit, amount: $amount) {
+    id
+  }
+}

@@ -1,58 +1,98 @@
-import React from 'react'
-import { arrayOf, string, bool, number, shape } from 'prop-types'
-import { css } from '@emotion/core'
+import React, { Fragment, useEffect } from 'react';
+import { useMutation } from '@apollo/client';
+import { arrayOf, string, bool, number, shape, func } from 'prop-types';
 
-const styles = css`
- .header {
-   font-weight: bold;
- }
-`
+import { makeStyles } from '@material-ui/core/styles';
+import Table from '@material-ui/core/Table';
+import TableBody from '@material-ui/core/TableBody';
+import TableCell from '@material-ui/core/TableCell';
+import TableHead from '@material-ui/core/TableHead';
+import TableRow from '@material-ui/core/TableRow';
+import Typography from '@material-ui/core/Typography';
+import { currencyFormat } from '../../uitls/helper-fuction';
+import IconButton from '@material-ui/core/IconButton';
+import DeleteIcon from '@material-ui/icons/Delete';
+import EditIcon from '@material-ui/icons/Edit';
+import { RemoveTransaction } from '../../gql/removeTransaction.gql';
+const useStyles = makeStyles({
+  table: {
+    minWidth: 650
+  },
+  header: {
+    padding: '16px'
+  }
+});
 
-const makeDataTestId = (transactionId, fieldName) => `transaction-${transactionId}-${fieldName}`
+const tableHeader = ['User ID', 'Description', 'Merchant ID', 'Amount', 'Actions'];
+// const makeDataTestId = (transactionId, fieldName) => `transaction-${transactionId}-${fieldName}`;
 
-export function TxTable ({ data }) {
+export function TxTable({ data, limit, title, refresh }) {
+  const classes = useStyles();
+  const filteredArray = data.slice(0, limit);
+
+  const [removeTransaction, { data: deleteData }] = useMutation(RemoveTransaction);
+
+  useEffect(() => {
+    if (deleteData !== undefined) refresh();
+  }, [deleteData]);
+
   return (
-    <table css={styles}>
-      <tbody>
-        <tr className='header'>
-          <td >ID</td>
-          <td >User ID</td>
-          <td >Description</td>
-          <td >Merchant ID</td>
-          <td >Debit</td>
-          <td >Credit</td>
-          <td >Amount</td>
-        </tr>
-        {
-          data.map(tx => {
-            const { id, user_id: userId, description, merchant_id: merchantId, debit, credit, amount } = tx
+    <Fragment>
+      <Typography className={classes.header} color="primary" component="h2" gutterBottom variant="h6">
+        {title}
+      </Typography>
+      <Table aria-label="simple table" className={classes.table}>
+        <TableHead>
+          <TableRow>
+            {tableHeader.map(th => (
+              <TableCell key={th}>{th}</TableCell>
+            ))}
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {filteredArray.map(row => {
+            const { id, user, description, merchant_id: merchantId, debit, credit, amount } = row;
             return (
-              <tr data-testid={`transaction-${id}`} key={`transaction-${id}`}>
-                <td data-testid={makeDataTestId(id, 'id')}>{id}</td>
-                <td data-testid={makeDataTestId(id, 'userId')}>{userId}</td>
-                <td data-testid={makeDataTestId(id, 'description')}>{description}</td>
-                <td data-testid={makeDataTestId(id, 'merchant')}>{merchantId}</td>
-                <td data-testid={makeDataTestId(id, 'debit')}>{debit}</td>
-                <td data-testid={makeDataTestId(id, 'credit')}>{credit}</td>
-                <td data-testid={makeDataTestId(id, 'amount')}>{amount}</td>
-              </tr>
-            )
-          })
-        }
-      </tbody>
-    </table>
+              <TableRow data-testid={`transaction-${id}`} key={`transaction-${id}`}>
+                <TableCell align="left">{user.firstName + ' ' + user.lastName}</TableCell>
+                <TableCell align="left">{description}</TableCell>
+                <TableCell align="left">{merchantId}</TableCell>
+                <TableCell align="left">{currencyFormat(debit, credit, amount)}</TableCell>
+                <TableCell align="left">
+                  <IconButton
+                    aria-label="delete"
+                    color="secondary"
+                    onClick={() => removeTransaction({ variables: { id } })}
+                  >
+                    <DeleteIcon />
+                  </IconButton>
 
-  )
+                  <IconButton aria-label="Edit">
+                    <EditIcon />
+                  </IconButton>
+                </TableCell>
+              </TableRow>
+            );
+          })}
+        </TableBody>
+      </Table>
+    </Fragment>
+  );
 }
 
 TxTable.propTypes = {
-  data: arrayOf(shape({
-    id: string,
-    user_id: string,
-    description: string,
-    merchant_id: string,
-    debit: bool,
-    credit: bool,
-    amount: number
-  }))
-}
+  limit: number,
+  title: string,
+  refresh: func,
+  data: arrayOf(
+    shape({
+      id: string,
+      user_id: string,
+      description: string,
+      merchant_id: string,
+      debit: bool,
+      credit: bool,
+      amount: number
+    })
+  )
+};
