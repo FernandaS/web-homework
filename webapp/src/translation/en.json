@@ -1,0 +1,15 @@
+{
+  "Description": "Description",
+  "User": "User",
+  "Amount": "Amount",
+  "Debit": "Debit",
+  "Credit": "Credit",
+  "Add Transaction": "Add Transaction",
+  "Edit Transaction": "Edit Transaction",
+  "Transactions": "Transactions",
+  "Dashboard": "Dashboard",
+  "Actions": "Actions",
+  "Recent Transactions": "Recent Transactions",
+  "Toggle Roman Numeral": "Toggle Roman Numeral"
+  
+}

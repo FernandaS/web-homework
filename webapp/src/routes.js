@@ -23,7 +23,9 @@ import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 
 import { mainListItems } from './components/listItems';
 
-import { NumberConvertorProvider } from './context/number-conversion-context';
+import { NumberConvertorProvider } from './contexts/number-conversion-context';
+import { I18nProvider } from './contexts/i18n-context';
+import { useTranslation } from 'react-i18next';
 
 const theme = createTheme({});
 const drawerWidth = 240;
@@ -126,6 +128,7 @@ const styles = theme => css`
 function AppRouter() {
   const [open, setOpen] = React.useState(true);
   const [isRomanNumeral, setRomanNumeral] = React.useState(false);
+  const { t } = useTranslation();
 
   const toggleRomanNumeral = () => setRomanNumeral(!isRomanNumeral);
 
@@ -141,61 +144,63 @@ function AppRouter() {
       <MuiThemeProvider theme={theme}>
         <ThemeProvider theme={theme}>
           <NumberConvertorProvider value={{ isRomanNumeral, toggleRomanNumeral }}>
-            <div css={styles} style={{ display: 'flex' }}>
-              <CssBaseline />
-              <AppBar className={cn('appBar', { appBarShift: open })} position="absolute">
-                <Toolbar className="toolbar">
-                  <IconButton
-                    aria-label="open drawer"
-                    className={cn('menuButton', { menuButtonHidden: open })}
-                    color="inherit"
-                    edge="start"
-                    onClick={handleDrawerOpen}
-                  >
-                    <MenuIcon />
-                  </IconButton>
-                  <Typography className="title" color="inherit" component="h1" noWrap variant="h6">
-                    Divvy
-                  </Typography>
-                </Toolbar>
-              </AppBar>
-              <Drawer
-                className={cn('drawerPaper', { drawerPaperClose: !open })}
-                classes={{
-                  paper: cn('drawerPaper', { drawerPaperClose: !open })
-                }}
-                open={open}
-                variant="permanent"
-              >
-                <div className="toolbarIcon">
-                  <IconButton onClick={handleDrawerClose}>
-                    <ChevronLeftIcon />
-                  </IconButton>
-                </div>
-                <Divider />
-                <List>{mainListItems}</List>
-              </Drawer>
+            <I18nProvider>
+              <div css={styles} style={{ display: 'flex' }}>
+                <CssBaseline />
+                <AppBar className={cn('appBar', { appBarShift: open })} position="absolute">
+                  <Toolbar className="toolbar">
+                    <IconButton
+                      aria-label="open drawer"
+                      className={cn('menuButton', { menuButtonHidden: open })}
+                      color="inherit"
+                      edge="start"
+                      onClick={handleDrawerOpen}
+                    >
+                      <MenuIcon />
+                    </IconButton>
+                    <Typography className="title" color="inherit" component="h1" noWrap variant="h6">
+                      Divvy
+                    </Typography>
+                  </Toolbar>
+                </AppBar>
+                <Drawer
+                  className={cn('drawerPaper', { drawerPaperClose: !open })}
+                  classes={{
+                    paper: cn('drawerPaper', { drawerPaperClose: !open })
+                  }}
+                  open={open}
+                  variant="permanent"
+                >
+                  <div className="toolbarIcon">
+                    <IconButton onClick={handleDrawerClose}>
+                      <ChevronLeftIcon />
+                    </IconButton>
+                  </div>
+                  <Divider />
+                  <List>{mainListItems({ t })}</List>
+                </Drawer>
 
-              <main className="content">
-                <div className="appBarSpacer" />
-                <Container className="container" maxWidth="lg">
-                  <Switch>
-                    <Route exact path="/">
-                      <Home />
-                    </Route>
-                    <Route exact path="/transactions">
-                      <Transactions />
-                    </Route>
-                    <Route path="/transactions/add">
-                      <AddTransaction />
-                    </Route>
-                    <Route path="/transaction/:id/edit">
-                      <EditTransaction />
-                    </Route>
-                  </Switch>
-                </Container>
-              </main>
-            </div>
+                <main className="content">
+                  <div className="appBarSpacer" />
+                  <Container className="container" maxWidth="lg">
+                    <Switch>
+                      <Route exact path="/">
+                        <Home />
+                      </Route>
+                      <Route exact path="/transactions">
+                        <Transactions />
+                      </Route>
+                      <Route path="/transactions/add">
+                        <AddTransaction />
+                      </Route>
+                      <Route path="/transaction/:id/edit">
+                        <EditTransaction />
+                      </Route>
+                    </Switch>
+                  </Container>
+                </main>
+              </div>
+            </I18nProvider>
           </NumberConvertorProvider>
         </ThemeProvider>
       </MuiThemeProvider>

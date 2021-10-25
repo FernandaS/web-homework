@@ -15,6 +15,8 @@ import Button from '@material-ui/core/Button';
 import { useForm, Controller } from 'react-hook-form';
 import { css } from '@emotion/core';
 
+import { useTranslation } from 'react-i18next';
+
 const styles = theme => css`
   .root {
     display: flex;
@@ -56,6 +58,8 @@ export function TransactionForm({ handleSubmit, usersData, isLoading, transactio
     return '';
   };
 
+  const { t } = useTranslation();
+
   const { control, handleSubmit: formSubmit } = useForm({
     defaultValues: { ...transaction, type: checkType() }
   });
@@ -71,7 +75,7 @@ export function TransactionForm({ handleSubmit, usersData, isLoading, transactio
             <TextField
               className="textField"
               id="outlined-margin-normal"
-              label="Description"
+              label={t('Description')}
               margin="normal"
               onChange={onChange}
               value={value}
@@ -80,30 +84,13 @@ export function TransactionForm({ handleSubmit, usersData, isLoading, transactio
           )}
           rules={{ required: 'Description is required' }}
         />
-        {/* <Controller
-        control={control}
-        defaultValue=""
-        name="merchant"
-        render={({ field: { onChange, value } }) => (
-          <TextField
-            className={classes.textField}
-            id="outlined-margin-normal"
-            label="Merchant"
-            margin="normal"
-            onChange={onChange}
-            value={value}
-            variant="outlined"
-          />
-        )}
-        rules={{ required: 'Merchant is required' }}
-      /> */}
         <Controller
           control={control}
           defaultValue=""
           name="user_id"
           render={({ field: { onChange, value } }) => (
             <FormControl className="formControl" variant="outlined">
-              <InputLabel id="demo-simple-select-outlined-label">User</InputLabel>
+              <InputLabel id="demo-simple-select-outlined-label">{t('User')}</InputLabel>
               <Select
                 id="demo-simple-select-outlined"
                 label="user"
@@ -135,7 +122,7 @@ export function TransactionForm({ handleSubmit, usersData, isLoading, transactio
           name="amount"
           render={({ field: { onChange, value } }) => (
             <FormControl className="margin" variant="outlined">
-              <InputLabel htmlFor="outlined-adornment-amount">Amount</InputLabel>
+              <InputLabel htmlFor="outlined-adornment-amount">{t('Amount')}</InputLabel>
               <OutlinedInput
                 id="outlined-adornment-amount"
                 labelWidth={60}
@@ -155,15 +142,15 @@ export function TransactionForm({ handleSubmit, usersData, isLoading, transactio
           render={({ field: { onChange, value } }) => (
             <FormControl component="fieldset">
               <RadioGroup aria-label="type" name="type1" onChange={onChange} value={value}>
-                <FormControlLabel control={<Radio />} label="Debit" value="debit" />
-                <FormControlLabel control={<Radio />} label="Credit" value="credit" />
+                <FormControlLabel control={<Radio />} label={t('Debit')} value="debit" />
+                <FormControlLabel control={<Radio />} label={t('Credit')} value="credit" />
               </RadioGroup>
             </FormControl>
           )}
           rules={{ required: 'Type is required' }}
         />
         <Button color="primary" type="submit" variant="contained">
-          {type === 'create' ? 'Add Transaction' : 'Edit Transaction'}
+          {type === 'create' ? t('Add Transaction') : t('Edit Transaction')}
         </Button>
       </form>
     </div>
