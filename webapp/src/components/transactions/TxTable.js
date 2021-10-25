@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect } from 'react';
+import React, { Fragment, useEffect, useContext } from 'react';
 import { useMutation } from '@apollo/client';
 import { arrayOf, string, bool, number, shape, func } from 'prop-types';
 import { Link } from 'react-router-dom';
@@ -10,11 +10,29 @@ import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Typography from '@material-ui/core/Typography';
-import { currencyFormat } from '../../uitls/helper-fuction';
+import { currencyFormat, intToRoman } from '../../uitls/helper-fuction';
 import IconButton from '@material-ui/core/IconButton';
 import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
+import FormGroup from '@material-ui/core/FormGroup';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Switch from '@material-ui/core/Switch';
+
 import { RemoveTransaction } from '../../gql/remove-transaction.gql';
+import cn from 'classnames';
+import { css } from '@emotion/core';
+import NumberContext from '../../context/number-conversion-context';
+
+const styles = css`
+  .debit {
+    color: green;
+  }
+  .header {
+    display: flex;
+    justify-content: space-between;
+  }
+`;
+
 const useStyles = makeStyles({
   table: {
     minWidth: 650
@@ -28,6 +46,7 @@ const tableHeader = ['User ID', 'Description', 'Merchant ID', 'Amount', 'Actions
 // const makeDataTestId = (transactionId, fieldName) => `transaction-${transactionId}-${fieldName}`;
 
 export function TxTable({ data, limit, title, refresh }) {
+  const { isRomanNumeral, toggleRomanNumeral } = useContext(NumberContext);
   const classes = useStyles();
   const filteredArray = data.slice(0, limit);
 
@@ -39,46 +58,59 @@ export function TxTable({ data, limit, title, refresh }) {
 
   return (
     <Fragment>
-      <Typography className={classes.header} color="primary" component="h2" gutterBottom variant="h6">
-        {title}
-      </Typography>
-      <Table aria-label="simple table" className={classes.table}>
-        <TableHead>
-          <TableRow>
-            {tableHeader.map(th => (
-              <TableCell key={th}>{th}</TableCell>
-            ))}
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {filteredArray.map(row => {
-            const { id, user, description, merchant_id: merchantId, debit, credit, amount } = row;
-            return (
-              <TableRow data-testid={`transaction-${id}`} key={`transaction-${id}`}>
-                <TableCell align="left">{user.firstName + ' ' + user.lastName}</TableCell>
-                <TableCell align="left">{description}</TableCell>
-                <TableCell align="left">{merchantId}</TableCell>
-                <TableCell align="left">{currencyFormat(debit, credit, amount)}</TableCell>
-                <TableCell align="left">
-                  <IconButton
-                    aria-label="delete"
-                    color="secondary"
-                    onClick={() => removeTransaction({ variables: { id } })}
-                  >
-                    <DeleteIcon />
-                  </IconButton>
+      <div css={styles}>
+        <section className="header">
+          <Typography className={classes.header} color="primary" component="h2" gutterBottom variant="h6">
+            {title}
+          </Typography>
+          <FormGroup>
+            <FormControlLabel
+              control={<Switch checked={isRomanNumeral} onChange={toggleRomanNumeral} />}
+              label="Toggle Roman Numeral"
+            />
+          </FormGroup>
+        </section>
 
-                  <IconButton aria-label="Edit">
-                    <Link to={`/transaction/${id}/edit`}>
-                      <EditIcon />
-                    </Link>
-                  </IconButton>
-                </TableCell>
-              </TableRow>
-            );
-          })}
-        </TableBody>
-      </Table>
+        <Table aria-label="simple table" className={classes.table}>
+          <TableHead>
+            <TableRow>
+              {tableHeader.map(th => (
+                <TableCell key={th}>{th}</TableCell>
+              ))}
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {filteredArray.map(row => {
+              const { id, user, description, merchant_id: merchantId, debit, credit, amount } = row;
+              return (
+                <TableRow data-testid={`transaction-${id}`} key={`transaction-${id}`}>
+                  <TableCell align="left">{user.firstName + ' ' + user.lastName}</TableCell>
+                  <TableCell align="left">{description}</TableCell>
+                  <TableCell align="left">{merchantId}</TableCell>
+                  <TableCell align="left" className={cn({ debit: debit })}>
+                    {isRomanNumeral ? intToRoman(amount) : currencyFormat(debit, credit, amount)}
+                  </TableCell>
+                  <TableCell align="left">
+                    <IconButton
+                      aria-label="delete"
+                      color="secondary"
+                      onClick={() => removeTransaction({ variables: { id } })}
+                    >
+                      <DeleteIcon />
+                    </IconButton>
+
+                    <IconButton aria-label="Edit">
+                      <Link to={`/transaction/${id}/edit`}>
+                        <EditIcon />
+                      </Link>
+                    </IconButton>
+                  </TableCell>
+                </TableRow>
+              );
+            })}
+          </TableBody>
+        </Table>
+      </div>
     </Fragment>
   );
 }

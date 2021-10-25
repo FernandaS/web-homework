@@ -21,6 +21,8 @@ import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 
 import { mainListItems } from './components/listItems';
 
+import { NumberConvertorProvider } from './context/number-conversion-context';
+
 // const layoutStyle = css`
 //   display: grid;
 //   grid-row-gap: 24px;
@@ -110,6 +112,10 @@ const useStyles = makeStyles(theme => ({
 function AppRouter() {
   const classes = useStyles();
   const [open, setOpen] = React.useState(true);
+  const [isRomanNumeral, setRomanNumeral] = React.useState(false);
+
+  const toggleRomanNumeral = () => setRomanNumeral(!isRomanNumeral);
+
   const handleDrawerOpen = () => {
     setOpen(true);
   };
@@ -119,60 +125,62 @@ function AppRouter() {
 
   return (
     <Router>
-      <div className={classes.root}>
-        <CssBaseline />
-        <AppBar className={clsx(classes.appBar, open && classes.appBarShift)} position="absolute">
-          <Toolbar className={classes.toolbar}>
-            <IconButton
-              aria-label="open drawer"
-              className={clsx(classes.menuButton, open && classes.menuButtonHidden)}
-              color="inherit"
-              edge="start"
-              onClick={handleDrawerOpen}
-            >
-              <MenuIcon />
-            </IconButton>
-            <Typography className={classes.title} color="inherit" component="h1" noWrap variant="h6">
-              Divvy
-            </Typography>
-          </Toolbar>
-        </AppBar>
-        <Drawer
-          classes={{
-            paper: clsx(classes.drawerPaper, !open && classes.drawerPaperClose)
-          }}
-          open={open}
-          variant="permanent"
-        >
-          <div className={classes.toolbarIcon}>
-            <IconButton onClick={handleDrawerClose}>
-              <ChevronLeftIcon />
-            </IconButton>
-          </div>
-          <Divider />
-          <List>{mainListItems}</List>
-        </Drawer>
+      <NumberConvertorProvider value={{ isRomanNumeral, toggleRomanNumeral }}>
+        <div className={classes.root}>
+          <CssBaseline />
+          <AppBar className={clsx(classes.appBar, open && classes.appBarShift)} position="absolute">
+            <Toolbar className={classes.toolbar}>
+              <IconButton
+                aria-label="open drawer"
+                className={clsx(classes.menuButton, open && classes.menuButtonHidden)}
+                color="inherit"
+                edge="start"
+                onClick={handleDrawerOpen}
+              >
+                <MenuIcon />
+              </IconButton>
+              <Typography className={classes.title} color="inherit" component="h1" noWrap variant="h6">
+                Divvy
+              </Typography>
+            </Toolbar>
+          </AppBar>
+          <Drawer
+            classes={{
+              paper: clsx(classes.drawerPaper, !open && classes.drawerPaperClose)
+            }}
+            open={open}
+            variant="permanent"
+          >
+            <div className={classes.toolbarIcon}>
+              <IconButton onClick={handleDrawerClose}>
+                <ChevronLeftIcon />
+              </IconButton>
+            </div>
+            <Divider />
+            <List>{mainListItems}</List>
+          </Drawer>
 
-        <main className={classes.content}>
-          <div className={classes.appBarSpacer} />
-          <Container className={classes.container} maxWidth="lg">
-            <Switch>
-              <Route exact path="/">
-                <Home />
-              </Route>
-              <Route exact path="/transactions">
-                <Transactions />
-              </Route>
-              <Route path="/transactions/add">
-                <AddTransaction />
-              </Route>
-              <Route path="/transaction/:id/edit">
-                <EditTransaction />
-              </Route>
-            </Switch>
-          </Container>
-        </main>
-      </div>
+          <main className={classes.content}>
+            <div className={classes.appBarSpacer} />
+            <Container className={classes.container} maxWidth="lg">
+              <Switch>
+                <Route exact path="/">
+                  <Home />
+                </Route>
+                <Route exact path="/transactions">
+                  <Transactions />
+                </Route>
+                <Route path="/transactions/add">
+                  <AddTransaction />
+                </Route>
+                <Route path="/transaction/:id/edit">
+                  <EditTransaction />
+                </Route>
+              </Switch>
+            </Container>
+          </main>
+        </div>
+      </NumberConvertorProvider>
     </Router>
   );
 }

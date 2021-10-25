@@ -28,9 +28,18 @@ export function Transactions() {
   }
   return (
     <Fragment>
-      <Button ariant="contained" className={classes.button} color="primary" size="small" startIcon={<AddIcon />}>
-        <Link to="/transactions/add">Add Transaction</Link>
+      <Button
+        ariant="contained"
+        className={classes.button}
+        color="primary"
+        component={Link}
+        size="medium"
+        startIcon={<AddIcon />}
+        to="/transactions/add"
+      >
+        Add Transaction
       </Button>
+
       <TxTable data={data.transactions} refresh={refetch} title={'Transactions'} />
     </Fragment>
   );

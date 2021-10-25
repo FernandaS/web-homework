@@ -35,14 +35,10 @@ export function Home() {
   return (
     <Grid container spacing={3}>
       {/* Chart */}
-      <Grid item lg={9} md={8} xs={12}>
+      <Grid item xs={12}>
         <Paper className={fixedHeightPaper} />
       </Grid>
-      {/* Recent Deposits */}
-      <Grid item lg={3} md={4} xs={12}>
-        <Paper className={fixedHeightPaper} />
-      </Grid>
-      {/* Recent Orders */}
+      {/* Recent Transactions */}
       <Grid item xs={12}>
         <Paper className={classes.paper}>
           <TxTable data={data.transactions} limit={5} refresh={refetch} title={'Recent Transactions'} />
