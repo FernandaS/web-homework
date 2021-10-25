@@ -38,8 +38,18 @@ const useStyles = makeStyles(theme => ({
 
 export function TransactionForm({ handleSubmit, usersData, isLoading, transaction = {} }) {
   const classes = useStyles();
+  const checkType = () => {
+    if (transaction.debit) {
+      return 'debit';
+    } else if (transaction.credit) {
+      return 'credit';
+    }
+
+    return '';
+  };
+
   const { control, handleSubmit: formSubmit } = useForm({
-    defaultValues: { ...transaction, type: transaction.debit ? 'debit' : 'credit' }
+    defaultValues: { ...transaction, type: checkType() }
   });
 
   return (
