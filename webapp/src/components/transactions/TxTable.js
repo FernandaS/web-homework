@@ -1,6 +1,7 @@
 import React, { Fragment, useEffect } from 'react';
 import { useMutation } from '@apollo/client';
 import { arrayOf, string, bool, number, shape, func } from 'prop-types';
+import { Link } from 'react-router-dom';
 
 import { makeStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
@@ -13,7 +14,7 @@ import { currencyFormat } from '../../uitls/helper-fuction';
 import IconButton from '@material-ui/core/IconButton';
 import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
-import { RemoveTransaction } from '../../gql/removeTransaction.gql';
+import { RemoveTransaction } from '../../gql/remove-transaction.gql';
 const useStyles = makeStyles({
   table: {
     minWidth: 650
@@ -68,7 +69,9 @@ export function TxTable({ data, limit, title, refresh }) {
                   </IconButton>
 
                   <IconButton aria-label="Edit">
-                    <EditIcon />
+                    <Link to={`/transaction/${id}/edit`}>
+                      <EditIcon />
+                    </Link>
                   </IconButton>
                 </TableCell>
               </TableRow>

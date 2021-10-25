@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import { Home } from './pages/home';
 import { Transactions } from './pages/transactions';
 import { AddTransaction } from './pages/transactions/new-transaction-page';
+import { EditTransaction } from './pages/transactions/edit-transaction-page';
 import { makeStyles } from '@material-ui/core/styles';
 import clsx from 'clsx';
 
@@ -164,6 +165,9 @@ function AppRouter() {
               </Route>
               <Route path="/transactions/add">
                 <AddTransaction />
+              </Route>
+              <Route path="/transaction/:id/edit">
+                <EditTransaction />
               </Route>
             </Switch>
           </Container>

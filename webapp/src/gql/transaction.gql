@@ -1,0 +1,11 @@
+query GetTransaction($id: String) {
+  transaction(id: $id) {
+    id
+    description
+    merchant_id
+    debit
+    credit
+    amount
+    user_id
+  }
+}
