@@ -3,7 +3,7 @@ import { useMutation } from '@apollo/client';
 import { arrayOf, string, bool, number, shape, func } from 'prop-types';
 import { Link } from 'react-router-dom';
 
-import { makeStyles } from '@material-ui/core/styles';
+// import { makeStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -27,27 +27,34 @@ const styles = css`
   .debit {
     color: green;
   }
-  .header {
+  .table-header {
     display: flex;
     justify-content: space-between;
   }
-`;
-
-const useStyles = makeStyles({
-  table: {
-    minWidth: 650
-  },
-  header: {
+  .table {
+    minWidth: 650;
+  }
+  .header: {
     padding: '16px'
   }
-});
+  }
+`;
+
+// const useStyles = makeStyles({
+//   table: {
+//     minWidth: 650
+//   },
+//   header: {
+//     padding: '16px'
+//   }
+// });
 
 const tableHeader = ['User ID', 'Description', 'Merchant ID', 'Amount', 'Actions'];
 // const makeDataTestId = (transactionId, fieldName) => `transaction-${transactionId}-${fieldName}`;
 
 export function TxTable({ data, limit, title, refresh }) {
   const { isRomanNumeral, toggleRomanNumeral } = useContext(NumberContext);
-  const classes = useStyles();
+  // const classes = useStyles();
   const filteredArray = data.slice(0, limit);
 
   const [removeTransaction, { data: deleteData }] = useMutation(RemoveTransaction);
@@ -59,8 +66,8 @@ export function TxTable({ data, limit, title, refresh }) {
   return (
     <Fragment>
       <div css={styles}>
-        <section className="header">
-          <Typography className={classes.header} color="primary" component="h2" gutterBottom variant="h6">
+        <section className="table-header">
+          <Typography className="header" color="primary" component="h2" gutterBottom variant="h6">
             {title}
           </Typography>
           <FormGroup>
@@ -71,7 +78,7 @@ export function TxTable({ data, limit, title, refresh }) {
           </FormGroup>
         </section>
 
-        <Table aria-label="simple table" className={classes.table}>
+        <Table aria-label="simple table" className="table">
           <TableHead>
             <TableRow>
               {tableHeader.map(th => (

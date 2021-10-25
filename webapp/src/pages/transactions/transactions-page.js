@@ -5,18 +5,14 @@ import { Link } from 'react-router-dom';
 import { TxTable } from '../../components/transactions/TxTable';
 import Button from '@material-ui/core/Button';
 
-// import SaveIcon from '@material-ui/icons/Save';
 import AddIcon from '@material-ui/icons/Add';
-import { makeStyles } from '@material-ui/core/styles';
+import { css } from '@emotion/core';
 
-const useStyles = makeStyles(theme => ({
-  button: {
-    margin: theme.spacing(1)
-  }
-}));
+const button = theme => css`
+  margin: ${theme.spacing(1)}px !important;
+`;
 
 export function Transactions() {
-  const classes = useStyles();
   let { loading, error, data = {}, refetch } = useQuery(GetTransactions, { fetchPolicy: 'network-only' });
 
   if (loading) {
@@ -27,12 +23,12 @@ export function Transactions() {
     return <Fragment>¯\_(ツ)_/¯</Fragment>;
   }
   return (
-    <Fragment>
+    <Fragment css>
       <Button
         ariant="contained"
-        className={classes.button}
         color="primary"
         component={Link}
+        css={button}
         size="medium"
         startIcon={<AddIcon />}
         to="/transactions/add"

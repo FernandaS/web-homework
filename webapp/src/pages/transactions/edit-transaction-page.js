@@ -31,6 +31,7 @@ export function EditTransaction() {
       handleSubmit={onSubmit}
       isLoading={usersLoading}
       transaction={data.transaction}
+      type={'edit'}
       usersData={usersData}
     />
   );
