@@ -1,8 +1,7 @@
-import React, { Fragment, useEffect, useContext } from 'react';
+import React, { Fragment, useEffect } from 'react';
 import { useMutation } from '@apollo/client';
 import { arrayOf, string, bool, number, shape, func } from 'prop-types';
 
-// import { makeStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -20,7 +19,7 @@ import Switch from '@material-ui/core/Switch';
 import { RemoveTransaction } from '../../gql/remove-transaction.gql';
 import cn from 'classnames';
 import { css } from '@emotion/core';
-import NumberContext from '../../contexts/number-conversion-context';
+import { withRomanNumerals } from '../../contexts/number-conversion-context';
 
 import { LinkWithSearch } from '../linkWithSearch';
 import { useTranslation } from 'react-i18next';
@@ -43,10 +42,10 @@ const styles = css`
 `;
 
 const tableHeader = ['User', 'Description', 'Amount', 'Actions'];
-// const makeDataTestId = (transactionId, fieldName) => `transaction-${transactionId}-${fieldName}`;
+const makeDataTestId = (transactionId, fieldName) => `transaction-${transactionId}-${fieldName}`;
 
-export function TxTable({ data, limit, title, refresh }) {
-  const { isRomanNumeral, toggleRomanNumeral } = useContext(NumberContext);
+export function TxTable({ data, limit, refresh }) {
+  const { isRomanNumeral, setRomanNumeral } = withRomanNumerals();
   const filteredArray = data.slice(0, limit);
   const [removeTransaction, { data: deleteData }] = useMutation(RemoveTransaction);
   const { t } = useTranslation();
@@ -64,7 +63,7 @@ export function TxTable({ data, limit, title, refresh }) {
           </Typography>
           <FormGroup>
             <FormControlLabel
-              control={<Switch checked={isRomanNumeral} onChange={toggleRomanNumeral} />}
+              control={<Switch checked={isRomanNumeral} onChange={() => setRomanNumeral(!isRomanNumeral)} />}
               label={t('Toggle Roman Numeral')}
             />
           </FormGroup>
@@ -83,15 +82,18 @@ export function TxTable({ data, limit, title, refresh }) {
               const { id, user, description, debit, credit, amount } = row;
               return (
                 <TableRow data-testid={`transaction-${id}`} key={`transaction-${id}`}>
-                  <TableCell align="left">{user.firstName + ' ' + user.lastName}</TableCell>
+                  <TableCell align="left" data-testid={makeDataTestId(id, 'user')}>
+                    {user.firstName + ' ' + user.lastName}
+                  </TableCell>
                   <TableCell align="left">{description}</TableCell>
-                  <TableCell align="left" className={cn({ debit: debit })}>
+                  <TableCell align="left" className={cn({ debit: debit })} data-testid={makeDataTestId(id, 'amount')}>
                     {isRomanNumeral ? intToRoman(amount) : currencyFormat(debit, credit, amount)}
                   </TableCell>
                   <TableCell align="left">
                     <IconButton
                       aria-label="delete"
                       color="secondary"
+                      data-testid={makeDataTestId(id, 'delete')}
                       onClick={() => removeTransaction({ variables: { id } })}
                     >
                       <DeleteIcon />
@@ -115,7 +117,6 @@ export function TxTable({ data, limit, title, refresh }) {
 
 TxTable.propTypes = {
   limit: number,
-  title: string,
   refresh: func,
   data: arrayOf(
     shape({

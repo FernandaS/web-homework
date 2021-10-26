@@ -23,7 +23,7 @@ import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 
 import { mainListItems } from './components/listItems';
 
-import { NumberConvertorProvider } from './contexts/number-conversion-context';
+import { RomanNumeralProvider } from './contexts/number-conversion-context';
 import { I18nProvider } from './contexts/i18n-context';
 import { useTranslation } from 'react-i18next';
 
@@ -127,10 +127,7 @@ const styles = theme => css`
 
 function AppRouter() {
   const [open, setOpen] = React.useState(true);
-  const [isRomanNumeral, setRomanNumeral] = React.useState(false);
   const { t } = useTranslation();
-
-  const toggleRomanNumeral = () => setRomanNumeral(!isRomanNumeral);
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -143,7 +140,7 @@ function AppRouter() {
     <Router>
       <MuiThemeProvider theme={theme}>
         <ThemeProvider theme={theme}>
-          <NumberConvertorProvider value={{ isRomanNumeral, toggleRomanNumeral }}>
+          <RomanNumeralProvider>
             <I18nProvider>
               <div css={styles} style={{ display: 'flex' }}>
                 <CssBaseline />
@@ -201,7 +198,7 @@ function AppRouter() {
                 </main>
               </div>
             </I18nProvider>
-          </NumberConvertorProvider>
+          </RomanNumeralProvider>
         </ThemeProvider>
       </MuiThemeProvider>
     </Router>
