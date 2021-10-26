@@ -22,7 +22,7 @@ export function EditTransaction() {
 
   const [editTrx] = useMutation(editTransaction);
 
-  if (loading) return 'Submitting...';
+  if (loading) return 'Loading...';
   if (error) return `Submission error! ${error.message}`;
   if (usersError) return `User Loading error! ${usersError.message}`;
 
