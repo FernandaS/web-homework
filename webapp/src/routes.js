@@ -1,14 +1,12 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import { Home } from './pages/home';
-import { Transactions } from './pages/transactions';
-import { AddTransaction } from './pages/transactions/new-transaction-page';
-import { EditTransaction } from './pages/transactions/edit-transaction-page';
+import { Transactions, AddTransaction, EditTransaction } from './pages/transactions';
 import { css } from '@emotion/core';
 import { ThemeProvider } from 'emotion-theming';
 
 import cn from 'classnames';
-import { createTheme, ThemeProvider as MuiThemeProvider } from '@material-ui/core/styles';
+import { ThemeProvider as MuiThemeProvider } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Drawer from '@material-ui/core/Drawer';
 import AppBar from '@material-ui/core/AppBar';
@@ -21,13 +19,12 @@ import MenuIcon from '@material-ui/icons/Menu';
 import Container from '@material-ui/core/Container';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 
-import { mainListItems } from './components/listItems';
+import { MainListItems } from './components/listItems';
 
 import { RomanNumeralProvider } from './contexts/number-conversion-context';
 import { I18nProvider } from './contexts/i18n-context';
-import { useTranslation } from 'react-i18next';
+import { theme } from './theme';
 
-const theme = createTheme({});
 const drawerWidth = 240;
 
 const styles = theme => css`
@@ -127,7 +124,6 @@ const styles = theme => css`
 
 function AppRouter() {
   const [open, setOpen] = React.useState(true);
-  const { t } = useTranslation();
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -174,7 +170,9 @@ function AppRouter() {
                     </IconButton>
                   </div>
                   <Divider />
-                  <List>{mainListItems({ t })}</List>
+                  <List>
+                    <MainListItems />
+                  </List>
                 </Drawer>
 
                 <main className="content">

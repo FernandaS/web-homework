@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo, forwardRef } from 'react';
 import PropTypes from 'prop-types';
 
 import ListItem from '@material-ui/core/ListItem';
@@ -7,21 +7,25 @@ import ListItemText from '@material-ui/core/ListItemText';
 import DashboardIcon from '@material-ui/icons/Dashboard';
 import DescriptionIcon from '@material-ui/icons/Description';
 import { LinkWithSearch } from './linkWithSearch';
+import { useTranslation } from 'react-i18next';
 
-// eslint-disable-next-line react/prop-types
-export const mainListItems = ({ t }) => (
-  <div>
-    <ListItemLink icon={<DashboardIcon />} primary={t('Dashboard')} to="/" />
-    <ListItemLink icon={<DescriptionIcon />} primary={t('Transactions')} to="/transactions" />
-  </div>
-);
+export function MainListItems() {
+  const { t } = useTranslation();
+
+  return (
+    <div>
+      <ListItemLink icon={<DashboardIcon />} primary={t('Dashboard')} to="/" />
+      <ListItemLink icon={<DescriptionIcon />} primary={t('Transactions')} to="/transactions" />
+    </div>
+  );
+}
 
 function ListItemLink(props) {
   const { icon, primary, to } = props;
 
-  const renderLink = React.useMemo(
+  const renderLink = useMemo(
     // eslint-disable-next-line react/display-name
-    () => React.forwardRef((itemProps, ref) => <LinkWithSearch ref={ref} to={to} {...itemProps} />),
+    () => forwardRef((itemProps, ref) => <LinkWithSearch ref={ref} to={to} {...itemProps} />),
     [to]
   );
 
